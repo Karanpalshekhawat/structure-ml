@@ -57,5 +57,9 @@ def run_output(fold, df, model):
 
 if __name__ == '__main__':
     df = create_folds_using_kfold()
-    for i in range(3):
-        run_output(i, df, "decision_tree_gini")
+    """Create a parser object and add variables that you want to declare"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--fold', type=int)
+    parser.add_argument('--model', type=str)
+    args = parser.parse_args()
+    run_output(args.fold, df, args.model)
