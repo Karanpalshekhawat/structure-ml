@@ -3,15 +3,18 @@ This script is the main file that calls all the other
 scripts to run the ml project.
 """
 
+import os
 import joblib
+import argparse
 import pandas as pd
+import src.config as sc
 
-from sklearn import metrics, tree
+from sklearn import metrics
 from src.create_folds import create_folds_using_kfold
+from src.model_dispatcher import models
 
 
-
-def run_output(fold, df):
+def run_output(fold, df, model):
     """
     Structure, train and save the model
     for given fold number.
@@ -19,6 +22,7 @@ def run_output(fold, df):
     Args:
         fold (int): number for fold
         df (pd.DataFrame): training dataset
+        model (str): Model to use (either gini or entropy)
 
     Returns:
 
@@ -34,10 +38,24 @@ def run_output(fold, df):
     x_valid = df_valid.drop('label', axis=1).values
     y_valid = df_valid['label'].values
 
+    """import the model required"""
+    clf = models[model]
 
+    """fit model on the training data"""
+    clf.fit(x_train, y_train)
 
+    """predict on validation dataset"""
+    y_pred = clf.predict(x_valid)
 
+    """find accuracy as distribution of all target variables in similar"""
+    accuracy = metrics.accuracy_score(y_valid, y_pred)
+    print(f"Fold number :{fold}, Accuracy score : {accuracy}")
+
+    """Save Model"""
+    joblib.dump(clf, os.path.join(sc.OUTPUT_FILE, f'dt_{fold}.bin'))
 
 
 if __name__ == '__main__':
     df = create_folds_using_kfold()
+    for i in range(3):
+        run_output(i, df, "decision_tree_gini")
