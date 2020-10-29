@@ -1,6 +1,5 @@
 # structure-ml
-First ML Project with proper structure
+First ML Project with proper structure.
 
-Do not add more than 100mb file in the input folder as it may slow down the git. Also, git does not allows to push these bif files to
- repo.
+Do not add more files that are more than 100mb in size as it may slow down the git. 
 
